@@ -1,0 +1,87 @@
+schema {
+  query: Query
+}
+
+type Query {
+  catalogWines(page: Int! = 1, pageSize: Int! = 20, wineryId: ID, vintage: Int): WinePage!
+  cellarInventory(page: Int! = 1, pageSize: Int! = 20, wineryId: ID): InventoryPage!
+  wineries(page: Int! = 1, pageSize: Int! = 20): WineryPage!
+  winery(wineryId: ID!): Winery
+  vineyards(wineryId: ID): [Vineyard!]!
+  vineyard(vineyardId: ID!): Vineyard
+  wines(page: Int! = 1, pageSize: Int! = 20, wineryId: ID): WinePage!
+  wine(wineId: ID!): Wine
+}
+
+type Winery {
+  id: ID!
+  name: String!
+  region: String!
+  country: String!
+  foundedYear: Int
+  website: String
+}
+
+type Vineyard {
+  id: ID!
+  name: String!
+  wineryId: ID!
+  region: String!
+  areaHectares: Float
+  altitudeMeters: Int
+}
+
+type Wine {
+  id: ID!
+  name: String!
+  vintage: Int!
+  grapeVarieties: [String!]!
+  region: String!
+  country: String!
+  alcoholPercentage: Float!
+  tastingNotes: String
+  price: Money!
+  wineryId: ID!
+  vineyardId: ID
+}
+
+type Money {
+  amount: Float!
+  currency: String!
+}
+
+enum InventoryAvailability {
+  IN_STOCK
+  LOW_STOCK
+  OUT_OF_STOCK
+}
+
+type InventoryItem {
+  id: ID!
+  wineId: ID!
+  wineryId: ID!
+  quantity: Int!
+  availability: InventoryAvailability!
+  updatedAt: String
+}
+
+type WinePage {
+  items: [Wine!]!
+  page: Int!
+  pageSize: Int!
+  totalItems: Int!
+}
+
+type WineryPage {
+  items: [Winery!]!
+  page: Int!
+  pageSize: Int!
+  totalItems: Int!
+}
+
+type InventoryPage {
+  items: [InventoryItem!]!
+  page: Int!
+  pageSize: Int!
+  totalItems: Int!
+}

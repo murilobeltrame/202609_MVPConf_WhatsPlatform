@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "rtk": true
+    },
+    "markdown.marp.themes": [
+        "./presentation.css"
+    ]
+}

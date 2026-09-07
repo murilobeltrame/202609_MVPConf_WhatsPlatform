@@ -1,0 +1,476 @@
+openapi: 3.0.3
+info:
+  title: Wine Platform API
+  version: 1.0.0
+  description: |
+    APIs shared by wine catalog consumers and winery operations.
+    Catalog and inventory endpoints support the API Management observability demo.
+  contact:
+    name: Wine Platform Team
+servers:
+  - url: https://api.wine-platform.example.com
+    description: Production example
+  - url: https://api-demo.wine-platform.example.com
+    description: API Management demonstration environment
+tags:
+  - name: Catalog
+    description: Public wine discovery endpoints.
+  - name: Inventory
+    description: Wine availability by winery.
+  - name: Wineries
+    description: Winery management operations.
+  - name: Vineyards
+    description: Vineyard management operations.
+  - name: Wines
+    description: Wine management operations.
+paths:
+  /catalogo/vinhos:
+    get:
+      tags: [Catalog]
+      summary: List wines in the catalog
+      operationId: listCatalogWines
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - name: wineryId
+          in: query
+          description: Restrict results to a winery.
+          schema:
+            type: string
+            format: uuid
+        - name: vintage
+          in: query
+          schema:
+            type: integer
+            minimum: 1900
+      responses:
+        '200':
+          description: A paged wine catalog.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WinePage'
+              example:
+                items:
+                  - id: 5f92436c-5aa6-4f84-951d-eb4cc784d634
+                    name: Reserva do Vale
+                    vintage: 2023
+                    grapeVarieties: [Cabernet Sauvignon, Merlot]
+                    region: Vale dos Vinhedos
+                    country: Brazil
+                    alcoholPercentage: 13.5
+                    tastingNotes: Full-bodied with blackberry and cedar notes.
+                    price: { amount: 129.90, currency: BRL }
+                    wineryId: 0af66871-f7a8-4e58-aec6-c13b57ad8b97
+                    vineyardId: d0be9a1f-0f3c-4e7c-80f2-7474a66f7d42
+                page: 1
+                pageSize: 20
+                totalItems: 1
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /catalogo/indisponivel:
+    get:
+      tags: [Catalog]
+      summary: Simulate an unavailable catalog operation
+      description: Returns a deliberate 503 response for observability demonstrations.
+      operationId: getUnavailableCatalog
+      responses:
+        '503':
+          description: Deliberate demonstration service interruption.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                type: https://api.wine-platform.example.com/problems/catalog-unavailable
+                title: Catalog temporarily unavailable
+                status: 503
+                detail: This endpoint intentionally returns 503 for the observability demo.
+  /estoque/adegas:
+    get:
+      tags: [Inventory]
+      summary: List wine availability by winery
+      operationId: listCellarInventory
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - name: wineryId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: A paged collection of inventory records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /wineries:
+    get:
+      tags: [Wineries]
+      summary: List wineries
+      operationId: listWineries
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A paged winery collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WineryPage'
+    post:
+      tags: [Wineries]
+      summary: Create a winery
+      operationId: createWinery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WineryInput'
+      responses:
+        '201':
+          description: Winery created.
+          headers:
+            Location:
+              schema: { type: string, format: uri }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Winery'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /wineries/{wineryId}:
+    parameters:
+      - $ref: '#/components/parameters/WineryId'
+    get:
+      tags: [Wineries]
+      summary: Get a winery
+      operationId: getWinery
+      responses:
+        '200':
+          description: Winery found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Winery'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Wineries]
+      summary: Update a winery
+      operationId: updateWinery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WineryInput'
+      responses:
+        '200':
+          description: Winery updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Winery'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /vineyards:
+    get:
+      tags: [Vineyards]
+      summary: List vineyards
+      operationId: listVineyards
+      parameters:
+        - name: wineryId
+          in: query
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Vineyard collection.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Vineyard' }
+    post:
+      tags: [Vineyards]
+      summary: Create a vineyard
+      operationId: createVineyard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VineyardInput' }
+      responses:
+        '201':
+          description: Vineyard created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vineyard' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /vineyards/{vineyardId}:
+    parameters:
+      - $ref: '#/components/parameters/VineyardId'
+    get:
+      tags: [Vineyards]
+      summary: Get a vineyard
+      operationId: getVineyard
+      responses:
+        '200':
+          description: Vineyard found.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vineyard' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Vineyards]
+      summary: Update a vineyard
+      operationId: updateVineyard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VineyardInput' }
+      responses:
+        '200':
+          description: Vineyard updated.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vineyard' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /wines:
+    get:
+      tags: [Wines]
+      summary: List managed wines
+      operationId: listWines
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - name: wineryId
+          in: query
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: A paged wine collection.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WinePage' }
+    post:
+      tags: [Wines]
+      summary: Create a wine
+      operationId: createWine
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WineInput' }
+      responses:
+        '201':
+          description: Wine created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Wine' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /wines/{wineId}:
+    parameters:
+      - $ref: '#/components/parameters/WineId'
+    get:
+      tags: [Wines]
+      summary: Get a wine
+      operationId: getWine
+      responses:
+        '200':
+          description: Wine found.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Wine' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Wines]
+      summary: Update a wine
+      operationId: updateWine
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WineInput' }
+      responses:
+        '200':
+          description: Wine updated.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Wine' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+components:
+  securitySchemes:
+    apimSubscriptionKey:
+      type: apiKey
+      in: header
+      name: Ocp-Apim-Subscription-Key
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    PageSize:
+      name: pageSize
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+    WineryId:
+      name: wineryId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    VineyardId:
+      name: vineyardId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    WineId:
+      name: wineId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+  responses:
+    BadRequest:
+      description: The request is invalid.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    Unauthorized:
+      description: A valid API Management subscription key is required.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    NotFound:
+      description: The requested resource does not exist.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+  schemas:
+    WineryInput:
+      type: object
+      required: [name, region, country]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 120 }
+        region: { type: string, minLength: 1, maxLength: 120 }
+        country: { type: string, minLength: 2, maxLength: 80 }
+        foundedYear: { type: integer, minimum: 1000, maximum: 2100 }
+        website: { type: string, format: uri }
+    Winery:
+      allOf:
+        - $ref: '#/components/schemas/WineryInput'
+        - type: object
+          required: [id]
+          properties:
+            id: { type: string, format: uuid }
+    VineyardInput:
+      type: object
+      required: [name, wineryId, region]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 120 }
+        wineryId: { type: string, format: uuid }
+        region: { type: string, minLength: 1, maxLength: 120 }
+        areaHectares: { type: number, minimum: 0, exclusiveMinimum: true }
+        altitudeMeters: { type: integer, minimum: 0 }
+    Vineyard:
+      allOf:
+        - $ref: '#/components/schemas/VineyardInput'
+        - type: object
+          required: [id]
+          properties:
+            id: { type: string, format: uuid }
+    Money:
+      type: object
+      required: [amount, currency]
+      properties:
+        amount: { type: number, minimum: 0, multipleOf: 0.01 }
+        currency: { type: string, pattern: '^[A-Z]{3}$', example: BRL }
+    WineInput:
+      type: object
+      required: [name, vintage, grapeVarieties, region, country, alcoholPercentage, price, wineryId]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 160 }
+        vintage: { type: integer, minimum: 1900, maximum: 2100 }
+        grapeVarieties:
+          type: array
+          minItems: 1
+          items: { type: string, minLength: 1 }
+        region: { type: string, minLength: 1, maxLength: 120 }
+        country: { type: string, minLength: 2, maxLength: 80 }
+        alcoholPercentage: { type: number, minimum: 0, maximum: 100 }
+        tastingNotes: { type: string, maxLength: 1000 }
+        price: { $ref: '#/components/schemas/Money' }
+        wineryId: { type: string, format: uuid }
+        vineyardId: { type: string, format: uuid }
+    Wine:
+      allOf:
+        - $ref: '#/components/schemas/WineInput'
+        - type: object
+          required: [id]
+          properties:
+            id: { type: string, format: uuid }
+    InventoryItem:
+      type: object
+      required: [id, wineId, wineryId, quantity, availability]
+      properties:
+        id: { type: string, format: uuid }
+        wineId: { type: string, format: uuid }
+        wineryId: { type: string, format: uuid }
+        quantity: { type: integer, minimum: 0 }
+        availability: { type: string, enum: [in_stock, low_stock, out_of_stock] }
+        updatedAt: { type: string, format: date-time }
+    PageMetadata:
+      type: object
+      required: [page, pageSize, totalItems]
+      properties:
+        page: { type: integer, minimum: 1 }
+        pageSize: { type: integer, minimum: 1 }
+        totalItems: { type: integer, minimum: 0 }
+    WinePage:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          required: [items]
+          properties:
+            items:
+              type: array
+              items: { $ref: '#/components/schemas/Wine' }
+    WineryPage:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          required: [items]
+          properties:
+            items:
+              type: array
+              items: { $ref: '#/components/schemas/Winery' }
+    InventoryPage:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          required: [items]
+          properties:
+            items:
+              type: array
+              items: { $ref: '#/components/schemas/InventoryItem' }
+    ProblemDetails:
+      type: object
+      required: [title, status]
+      properties:
+        type: { type: string, format: uri-reference }
+        title: { type: string }
+        status: { type: integer, minimum: 100, maximum: 599 }
+        detail: { type: string }
+        instance: { type: string, format: uri-reference }
+security:
+  - apimSubscriptionKey: []
