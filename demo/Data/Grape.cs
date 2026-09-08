@@ -6,7 +6,7 @@ public record Grape(
     IEnumerable<GrapeRegion> Regions
     )
 {
-    public static Grape CabernetSauvignon() => new(
+    public static Grape CabernetSauvignon{ get; } = new(
            "Cabernet Sauvignon",
            GrapeType.Red,
            [
@@ -20,7 +20,7 @@ public record Grape(
                new(Region.CampanhaGaucha, Native: false)
            ]);
    
-       public static Grape Merlot() => new(
+       public static Grape Merlot { get; } = new(
            "Merlot",
            GrapeType.Red,
            [
@@ -28,7 +28,7 @@ public record Grape(
                new(Region.SerraGaucha, Native: false)
            ]);
    
-       public static Grape PinotNoir() => new(
+       public static Grape PinotNoir{ get; } = new(
            "Pinot Noir",
            GrapeType.Red,
            [
@@ -38,7 +38,7 @@ public record Grape(
                new(Region.SerraGaucha, Native: false),
            ]);
    
-       public static Grape Chardonnay() => new(
+       public static Grape Chardonnay { get; } = new(
            "Chardonnay",
            GrapeType.White,
            [
@@ -48,7 +48,7 @@ public record Grape(
                new(Region.SerraGaucha, Native: false)
            ]);
    
-       public static Grape Syrah() => new(
+       public static Grape Syrah { get; } = new(
            "Syrah / Shiraz",
            GrapeType.Red,
            [
@@ -58,21 +58,21 @@ public record Grape(
                new(Region.ValeDoSaoFrancisco, Native: false)
            ]);
    
-       public static Grape Sangiovese() => new(
+       public static Grape Sangiovese{ get; } = new(
            "Sangiovese",
            GrapeType.Red,
            [
                new(Region.Toscana, Native: true)
            ]);
    
-       public static Grape Nebbiolo() => new(
+       public static Grape Nebbiolo{ get; } = new(
            "Nebbiolo",
            GrapeType.Red,
            [
                new(Region.Piemonte, Native: true)
            ]);
    
-       public static Grape Tempranillo() => new(
+       public static Grape Tempranillo{ get; } = new(
            "Tempranillo / Tinta Roriz",
            GrapeType.Red,
            [
@@ -81,7 +81,7 @@ public record Grape(
                new(Region.Alentejo, Native: true)
            ]);
    
-       public static Grape TourigaNacional() => new(
+       public static Grape TourigaNacional{ get; } = new(
            "Touriga Nacional",
            GrapeType.Red,
            [
@@ -89,45 +89,64 @@ public record Grape(
                new(Region.Alentejo, Native: true)
            ]);
    
-       public static Grape Xinomavro() => new(
+       public static Grape Xinomavro{ get; } = new(
            "Xinomavro",
            GrapeType.Red,
            [
                new(Region.Naoussa, Native: true)
            ]);
    
-       public static Grape Assyrtiko() => new(
+       public static Grape Assyrtiko{ get; } = new(
            "Assyrtiko",
            GrapeType.White,
            [
                new(Region.Santorini, Native: true)
            ]);
    
-       public static Grape Saperavi() => new(
+       public static Grape Saperavi{ get; } = new(
            "Saperavi",
            GrapeType.Red,
            [
                new(Region.Kakheti, Native: true)
            ]);
    
-       public static Grape Rkatsiteli() => new(
+       public static Grape Rkatsiteli{ get; } = new(
            "Rkatsiteli",
            GrapeType.White,
            [
                new(Region.Kakheti, Native: true)
            ]);
        
-       public static Grape Torrontes() => new(
+       public static Grape Torrontes{ get; } = new(
            "Torrontés",
            GrapeType.White,
            [
                new(Region.Mendoza, Native: true) // Criada na Argentina por cruzamento natural
            ]);
    
-       public static Grape Pinotage() => new(
+       public static Grape Pinotage{ get; } = new(
            "Pinotage",
            GrapeType.Red,
            [
                new(Region.Stellenbosch, Native: true) // Criada na África do Sul em laboratório (Pinot Noir x Cinsault)
            ]);
+
+       public static IEnumerable<Grape> All() =>
+       [
+           Merlot,
+           PinotNoir,
+           CabernetSauvignon,
+           Pinotage,
+           Torrontes,
+           Rkatsiteli,
+           Saperavi,
+           Assyrtiko,
+           Xinomavro,
+           TourigaNacional,
+           Tempranillo,
+           Nebbiolo,
+           Sangiovese,
+           Syrah,
+           Chardonnay
+       ];
 };
