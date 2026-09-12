@@ -14,7 +14,6 @@ builder.Logging.AddConsole(o => o.LogToStandardErrorThreshold = LogLevel.Trace);
 builder.Services
     .AddMcpServer()
     .WithHttpTransport()
-    .WithStdioServerTransport()
     .WithTools<GrapeTools>();
 
 builder.Services.AddCors(o => o

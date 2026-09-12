@@ -1,8 +1,10 @@
+using Microsoft.OpenApi;
+
 using WinePlatform;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(o => o.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0);
 builder.Services.AddHealthChecks();
 
 builder.Services.AddCors(o => o
