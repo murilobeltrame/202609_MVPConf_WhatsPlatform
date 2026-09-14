@@ -4,5 +4,6 @@
     },
     "markdown.marp.themes": [
         "./presentation.css"
-    ]
+    ],
+    "markdown.marp.html": "all"
 }
