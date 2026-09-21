@@ -2,6 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 COPY Data/ ./Data/
+COPY Monitoring/ ./Monitoring/
 COPY rest/WinePlatform/ ./rest/WinePlatform/
 
 RUN dotnet publish -c Release -o /app rest/WinePlatform/

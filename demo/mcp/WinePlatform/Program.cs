@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
+using Monitoring;
 using WinePlatform.Tools;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddMonitoringDefaults();
 
 // Configure all logs to go to stderr (stdout is used for the MCP protocol messages).
 builder.Logging.AddConsole(o => o.LogToStandardErrorThreshold = LogLevel.Trace);
@@ -25,7 +27,6 @@ builder.Services.AddCors(o => o
 var app = builder.Build();
 
 app.UseCors();
-app.MapGet("/health", () => Results.Ok("OK"));
 app.MapMcp("/mcp");
 
 await app.RunAsync();

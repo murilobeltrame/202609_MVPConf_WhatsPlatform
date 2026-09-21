@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/demo/">
     <Project Path="demo/Data/Data.csproj" />
+    <Project Path="demo/Monitoring/Monitoring.csproj" />
   </Folder>
   <Folder Name="/demo/mcp/">
     <Project Path="demo/mcp/WinePlatform/WinePlatform.csproj" />

@@ -1,8 +1,10 @@
 using Microsoft.OpenApi;
-
+using Monitoring;
 using WinePlatform;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddMonitoringDefaults();
 
 builder.Services.AddOpenApi(o => o.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0);
 builder.Services.AddHealthChecks();

@@ -64,15 +64,14 @@ Para business: escala de clientes, sozinha, não prova que exista uma plataforma
 
 # O mapa das definições
 
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;text-align:center;font-size:0.78em;margin-top:35px">
-<div style="border:3px solid #f5d547;padding:20px"><strong>BASE</strong><br>capacidades<br>dados<br>infraestrutura</div>
-<div style="font-size:2.6em;padding-top:25px">-&gt;</div>
-<div style="border:3px solid #f5d547;padding:20px"><strong>INTERFACES</strong><br>APIs<br>eventos<br>SDKs</div>
-<div style="font-size:2.6em;padding-top:25px">-&gt;</div>
-<div style="border:3px solid #f5d547;padding:20px"><strong>COMPLEMENTOS</strong><br>apps<br>integrações<br>serviços</div>
-<div style="font-size:2.6em;padding-top:25px">-&gt;</div>
-<div style="border:3px solid #f5d547;padding:20px"><strong>VALOR</strong><br>usuários<br>adoção<br>resultado</div>
-</div>
+```mermaid
+flowchart LR
+	B[Base<br/>capacidades, dados e infraestrutura]
+	I[Interfaces<br/>APIs, eventos e SDKs]
+	C[Complementos<br/>apps, integrações e serviços]
+	V[Valor<br/>usuários, adoção e resultado]
+	B --> I --> C --> V
+```
 
 <!--
 _notes:
@@ -107,12 +106,18 @@ O ponto importante: o owner não controla sozinho todo o valor criado. O ecossis
 
 # A coevolução em Tiwana
 
-<div style="font-family:monospace;font-size:0.88em;line-height:1.9;margin:20px 0">
-<div>[ ARQUITETURA ] -&gt; [ GOVERNANÇA ] -&gt; [ COMPLEMENTADORES ]</div>
-<div style="padding-left:130px">^                                      |</div>
-<div style="padding-left:130px">|                                      v</div>
-<div>[ ESTRATÉGIA ] &lt;- [ VALOR E ADOÇÃO ] &lt;- [ USUÁRIOS ]</div>
-</div>
+```mermaid
+flowchart LR
+	A[Arquitetura] --> G[Governança]
+	G --> C[Complementadores]
+	C --> U[Usuários]
+	U --> V[Valor e adoção]
+	V --> E[Estratégia]
+	E --> A
+	X[Ambiente<br/>tecnologia, concorrência e regulação] --> A
+	X --> G
+	X --> E
+```
 
 ### O ambiente pressiona o ciclo
 
@@ -165,11 +170,11 @@ O valor está na tradução: propriedade conceitual -> pergunta -> evidência op
 
 ## Uma plataforma vale mais quando capacidades podem ser combinadas
 
-```text
-[ Identidade ] + [ Pedidos ] + [ Pagamentos ]
-								 |
-								 v
-				  [ Nova experiência de negócio ]
+```mermaid
+flowchart TB
+    I[Identidade] --> N[Nova experiência de negócio]
+    P[Pedidos] --> N
+    G[Pagamentos] --> N
 ```
 
 ### Observar
@@ -246,12 +251,13 @@ Uma app store ou marketplace evidencia melhor a lente de *Platform Revolution*.
 
 # A ponte entre as duas lentes
 
-```text
-Composability  ->  novas combinações  ->  novas interações
-Plasticity     ->  novos contextos    ->  novos lados e nichos
-Mutation       ->  evolução confiável  ->  confiança e liquidez
-Retenção       ->  uso recorrente     ->  efeitos de rede
-Governança     ->  regras previsíveis  ->  participação sustentável
+```mermaid
+flowchart LR
+	C[Composability] --> C1[Novas combinações] --> C2[Novas interações]
+	P[Plasticity] --> P1[Novos contextos] --> P2[Novos lados e nichos]
+	M[Mutation] --> M1[Evolução confiável] --> M2[Confiança e liquidez]
+	R[Retenção] --> R1[Uso recorrente] --> R2[Efeitos de rede]
+	G[Governança] --> G1[Regras previsíveis] --> G2[Participação sustentável]
 ```
 
 <!--
@@ -266,14 +272,14 @@ O APIM entra como uma camada que torna contratos, políticas e sinais observáve
 
 ## APIM é uma peça da plataforma, não a plataforma inteira
 
-<div style="font-family:monospace;font-size:0.82em;line-height:2.2">
-[ Consumidores e complementadores ]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
-[ Portal ] -&gt; [ APIM: contratos, políticas, produtos ] -&gt; [ Backends ]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ Monitor | Logs | Traces | Alertas ]
-</div>
+```mermaid
+flowchart LR
+	C[Consumidores e complementadores] --> P[Portal]
+	P --> A[APIM<br/>contratos, políticas e produtos]
+	A --> B[Backends]
+	A --> O[Monitor, logs, traces e alertas]
+	B --> O
+```
 
 <!--
 _notes:
@@ -378,15 +384,14 @@ Combine telemetria com entrevistas: dados mostram o que aconteceu; parceiros aju
 
 # O que muda com LLMs?
 
-<div style="font-family:monospace;font-size:0.83em;line-height:2.2">
-[ Aplicação ou agente ] -&gt; [ APIM: auth, quota, roteamento ]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ Modelos ] + [ Ferramentas ]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ Avaliação: qualidade, custo, segurança ]
-</div>
+```mermaid
+flowchart TB
+	A[Aplicação ou agente] --> G[APIM<br/>auth, quota e roteamento]
+	G --> M[Modelos]
+	G --> F[Ferramentas]
+	M --> E[Avaliação<br/>qualidade, custo e segurança]
+	F --> E
+```
 
 <!--
 _notes:
