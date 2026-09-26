@@ -1,0 +1,5 @@
+@apim-subscription-key=
+
+### GET GRAPES
+GET https://mbc-apim.azure-api.net/v1/grapes
+Ocp-Apim-Subscription-Key: {{apim-subscription-key}}
